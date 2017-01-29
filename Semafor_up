@@ -1,0 +1,42 @@
+//Exercici SEMAFOR UP
+public class Semafor {  
+    protected int value;  
+    protected AtomicBoolean lock;  
+ 	    public Semafor() {  
+        // inicialitza el valor de lock a false:  
+        lock = new AtomicBoolean(false);  //(Equivalent a fer lock=new Semafor (1);
+    }  
+    void entrar_zc(){
+        while(lock.getAndSet(true));
+    }
+    void salir_zc(){
+        lock.set(false);
+    }
+
+    // Operació up: ...  
+}
+
+public void up(int n){
+	entrar_zc();		//Equivalent a fer un lock.P(); (Exclusió mútua)
+		while((value+n)<0){	 //Si n és negatiu (-3) value ha de ser mayor que 3 y asi se cumple
+						la condición
+			salir_zc();	//Sortim de l'exclusió mútua (Equivalent a fer un lock.V();)
+			entrar_zc();	//Tornem a entrar en Exclusió mútua
+			}
+		}
+		value+=n; 	// S'incrementa el valor de value en 'n'
+		salir_zc();	 //Sortim de l'exclusió mútua
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+

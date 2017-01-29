@@ -1,0 +1,50 @@
+//exercici 6 loteria
+public class Numale extends Thread{  
+ Public barrier b;
+  Public Numale(){
+	b= new barrier (5);
+}
+  public void run(){  
+    int num;  
+ 
+    while(true){  
+      num=(int)(Math.random()*10);  
+      System.out.print(num);  
+      //espera a que tots hagin imprés  
+      b.barrier_wait();  
+    }  
+  }  
+}
+
+public class barrier{
+    private final int N;
+    private boolean obert;
+    private int num=0;
+    private final AtomicBoolean TestAndSet;
+    public barrier(int N){
+        this.N=N;
+        obert=false;
+        TestAndSet= new AtomicBoolean(false);
+    }
+    public void entrar_zc(){
+        while(TestAndSet.getAndSet(true));
+    }
+    public void sortir_zc(){
+        TestAndSet.set(false);
+    }
+    public void barrier_wait(){
+        entrar_zc();
+        while(obert){sortir_zc();entrar_zc();}
+        num=num+1;
+        if(num==N){
+                System.out.println("");
+                obert=true;
+            }
+       while(!obert){sortir_zc();entrar_zc();}
+       num=num-1;
+       if(num==0){
+       obert=false;
+            } 
+       sortir_zc();
+    }    
+}

@@ -1,0 +1,69 @@
+//Exercici canal sincron
+
+public class canal{
+	private Object buffer;
+	private int proc_a_enviar, proc_a_rebre, rebut;
+	private Semaforo mutex, ready, emisor, receptor;
+	public Canal() {
+		emisor = new Semaforo(1);
+		receptor = new Semaforo(2);
+		mutex = new Semaforo(1);
+		ready = new Semaforo(0);
+		proc_a_enviar = 0;
+		proc_a_rebre = 0;
+		rebut = 0;
+	}
+	public void enviar (int ref){
+		emisor.P();	//Garantim que només hi hagi un emisor per enviar, que no se'ns coli cap 
+més, així al sortir de la E.M. l'emissor esperarà a poder enviar.
+		mutex.P();
+		proc_a_enviar++;
+		buffer=ref;
+		if(proc_a_rebre!=2)//Si no hi ha els 2 receptors a punt per rebre ens parem
+			{	mutex.V();
+				ready.P();
+			}
+		else{	           //Si ja estan els 2 receptors a punt, alliberem els 2 i sortim de l'exclusió mútua
+				mutex.V();
+				ready.V();
+				ready.V();
+			}
+	}
+	
+	public Object rebre(){
+		receptor.P();	//Deixem entrar fins a 2 receptors per tal de rebre la informació
+		mutex.P();
+		proc_a_rebre++;	//Cada un que entra es conta com un receptor a rebre.
+		if(proc_a_rebre!=2||proc_a_enviar!=1)		//Si no tenim els 2 receptors a punt (ets el 
+primer) o no tenim l'emissor a punt
+		{
+			mutex.V();
+			ready.P();
+			mutex.P();
+		}
+		else{ 	//Si ja tenim el sistema de transmissió a punt (ets el 2n receptor (que està 
+despert)), despertem el receptor que esperava i l'emissor que podia estar esperant
+mutex.V();
+			ready.V();
+			ready.V();
+		}
+		Object tmp=buffer;	//guardem el que hi havia a buffer a la variable tmp
+		rebut++;		//Contem els rebuts. Quan tinguem els 2 receptors amb missatge 
+rebut ho desfarem tot
+		if(rebut==2){
+			proc_a_rebre=0;
+			proc_a_enviar=0;
+			rebut=0;
+			emisor.V();	//alliberem l'emissor
+			receptor.V();	//alliberem els 2 receptors
+			receptor.V();
+			mutex.V();	//sortim d'exclusió mútua
+		else{
+			mutex.V();	//sinó s'han rebut és perquè ha hagut error en transmissió i per no 
+					bloquejar el sistema, en sortim
+			}
+		return tmp;
+	}
+}
+	
+

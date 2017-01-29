@@ -1,0 +1,39 @@
+//Es  vol  programar  una  barrera  d'ordre n amb  pas  de  missatges (sockets TCP) 
+//i  arquitectura  client/servidor mono-thread (monitor actiu)
+//Es demana implementar les classes client i servidor
+
+public class BarrierClient { 
+public void barrier_wait () { 
+try { 
+	Socket sc = new Socket (Comms.HOST,Comms.PORT); 
+	sc.getInputStream().read(); 
+	sc.close(); 
+	}
+	catch(Exception e) {e.printStackTrace();} 
+	} 
+} 
+public class BarrierServer{ 
+	private int n; 
+public BarrierServer (int n){ 
+	this.n=n; 
+} 
+public void servir(){ 
+	inti=0; 
+	ArrayList<Socket> l = new ArrayList<Socket>(); 
+try { 
+	ServerSocket ss = new ServerSocket(Comms.PORT); 
+while (true) { 
+	Socket sc = ss.accept(); 
+	i=(i+1)%n;
+	if(i==0){ 
+		while (!l.isEmpty()) 
+		l.remove(0).getOutputStream().write(0); 
+	sc.getOutputStream().write(0); 
+	} else 
+		l.add(sc); 
+	} 
+}
+	catch(Exception e){e.printStackTrace();
+	} 
+	} 
+} 

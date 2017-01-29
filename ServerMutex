@@ -1,0 +1,66 @@
+//Exercici3, Server Mutex
+ 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.UnknownHostException;
+ 
+/** Exemple complert de implementació d'exclusió mútua amb pas de missatges. */
+public class ServerMutex {
+ 
+    /** Servidor que actúa com a mutex.*/
+    public static class Server extends Thread {
+         
+        public void run() {
+            try {
+                ServerSocket ss = new ServerSocket(Comms.port);
+                System.out.println("Server listening to port " + Comms.port + "...");
+                // Nota: En aquest exemple, el servidor estarà escoltant sempre. Per parar-lo cal matar el procés.
+                while(true) {
+                    // Esperar a un nou client
+                    Socket s = ss.accept();
+                    // Indicar que pot entrar
+                    s.getOutputStream().write(1);
+                    // Esperar a que surti
+                    s.getInputStream().read();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    /** Thread que vol accedir a la zona crítica. */
+    public static class Client extends Thread {
+        int id;
+        public Client(int id) {
+            this.id = id;
+        }
+        public void run() {
+            // El codi del thread d'aquest exemple es limita a l'entrada i sortida de la ZC.
+            try {               
+                Socket s = new Socket(Comms.host, Comms.port);
+                // Esperar a que el servidor em deixi entrar.
+                s.getInputStream().read();
+                System.out.println(id + ".- Enter ZC.");
+                sleep(1000);
+                System.out.println(id + ".- Exit ZC.");
+                // Indicar al servidor que surto.
+                s.getOutputStream().write(1);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+     
+    public static void main(String[] args) {
+        // En aquest exemple es crea un servidor i 10 clients que intentaran accedir a la zona crítica.
+        new Server().start();
+        for(int i=0;i<10;i++)
+            new Client(i).start();
+    }
+ 
+}

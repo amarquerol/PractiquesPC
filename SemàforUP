@@ -1,0 +1,22 @@
+//Semàfor UP
+
+import java.util.concurrent.atomic.AtomicBoolean;
+public class SemaforUp {
+protected int value;
+protected AtomicBoolean lock;
+public Semafor(){
+	lock= new AtomicBoolean(false);
+}
+public void up(int n){
+	while(lock.getAndSet(true)
+);
+if(n<0){
+while((value+n)<0){
+lock.set(false);
+while(lock.getAndSet(true));
+}
+}
+value=value+n;
+lock.set(false);
+}
+}

@@ -1,0 +1,35 @@
+//exemples barreres
+
+public class Barrier{ 
+private Semaphore Mutex, Barrera; 
+private int threads, llegadas; 
+public Barrier(int n){ 
+	llegadas=0;
+	Barrera=new Semaphore(0); 
+	Mutex=new Semaphore(1); 
+	threads=n; 
+} 
+public void barrier_wait(){ 
+	Mutex.P(); 
+	llegadas++; 
+	if(llegadas==threads){ 
+		llegadas--;
+	Barrera.V(); 
+}
+else{ 
+	Mutex.V();
+	Barrera.P(); 
+	llegadas--; 
+
+} 
+if(llegadas==0){ 
+	Mutex.V(); 
+}
+else{ 
+	Barrera.V(); 
+} 
+}
+} 
+}
+
+

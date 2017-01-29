@@ -1,0 +1,41 @@
+ 
+/**
+* Implementació d'una cua circular.
+* Aquesta implementació no té cap control en els mètodes d'afegir i treure elements que impedeixin treure un element d'una cua buida o posar-ne a una cua plena.
+*/
+public class CircularQueue implements Queue {
+ 
+    private Object[] objects;
+    private int first, last, num;
+    private int maxElems;
+     
+    public CircularQueue(int maxSize) {
+        maxElems = maxSize;
+        objects = new Object[maxElems];
+        first = last = num = 0;
+    }
+    public int rank() {
+        return num;
+    }
+    public boolean isFull() {
+        return num == maxElems;
+    }
+    public boolean isEmpty() {
+        return num == 0;
+    }
+    /** Afegeix l'element donat a la cua. No controla si la cua està o no plena.
+    */
+    public void put(Object x) {
+        objects[last] = x;
+        last = (last+1)%maxElems;
+        num++;
+    }
+    /** Treu un element de la cua i el retorna. No controla si la cua està o no buida.
+    */
+    public Object get() {
+        Object val = objects[first];
+        first = (first+1)%maxElems;
+        num--;
+        return val;
+    }
+}

@@ -1,0 +1,48 @@
+/*Semafors Els telecadires tenen capacitat de 4 persones. No esta peres que al telecadi-ra hi 
+hagi un hacker amb tres empleats, o be un empleat amb tres hackers.
+Qualsevol altre combinacio es possible.
+Programar una classe que implementi telecadira via SEMAFORS*/
+
+class TelecadiraMonitor extends Monitor implements Telecadira {
+protected boolean hack, empl;
+protected Condition  capHack , capEmpl , sync;
+protected int arribats;
+
+public TelecadiraMonitor (){
+	capHack = newCondition( );capEmpl = newCondition( );
+	sync = newCondition( );
+}
+public void accedirHacker(){
+	entrarMon( );
+	while (hack){ capHack.waitCond( );}
+	hack = true;
+	arribats ++;
+	if(arribats <2){
+		sync.waitCond( ) ;
+		arribats = 0;
+		hack = empl = false;
+		capHack.signalCond ();
+		capEmpl.signalCond ();
+	} else {
+			sync.signalCond( );
+	} 
+	sortirMon( );
+}
+
+public void accedirEmpleat (){
+	entrarMon ( );
+	while (empl){capEmpl.waitCond ( );}
+	empl =true;
+	arribats++;
+	if (arribats<2){
+		sync.waitCond ( );
+		arribats= 0;
+		hack = empl = false;
+		capHack.signalCond ( );
+		capEmpl.signalCond ( );
+	}else {
+		sync.signalCond ( );
+	}
+	sortirMon ( );
+}
+}

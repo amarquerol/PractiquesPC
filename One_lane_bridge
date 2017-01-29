@@ -1,0 +1,49 @@
+//Exercici 5 onelanebridge
+
+public class Pont{
+	private int Cotxes;
+	private boolean Bridge_way, busy;
+	private Atomicboolean ts;
+	public pont (){
+		ts = newAtomicBoolean (false);
+	
+    public void entrar_zc(){
+        while(ts.getAndSet(true));
+    }
+    public void sortir_zc(){
+        ts.set(false);
+    }
+Void enter(Boolean way){
+		Entrar_zc();	//Esclusió mútua
+While(way!=bridge_way && busy==true){	//mentres la direcció no sigui la del 
+pont i hi hagi cotxes dins
+			sortir_zc();	//sortim d'exclusió mútua
+			While(way!=bridge_way && busy==true);	//parem el procés
+			Entrar_zc();	//entrem en exclusió mútua
+		}
+		Busy=true;		//posem que hi ha transit
+		Bridge_way=way;	//canviem la direccio (si es en el canvi)
+		Cotxes++;		//cotxes que circulen augmenten
+		Sortir_zc();(false);	//sortim de l'exclusió mutua
+	}
+	Void exit(){
+		Entrar_zc();		//exclusió mútua
+		Cotxes--;		//restem el nombre de cotxes
+		If(cotxes==0){		//si surt l'ultim cotxe...
+			busy=false;	//ja no hi ha cotxes dins
+		}
+		Salir_zc();		//sortim de l'exclusió mútua
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+

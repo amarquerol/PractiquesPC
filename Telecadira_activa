@@ -1,0 +1,52 @@
+/* Programar una classe que implementi l'inter Telecadira mijancant mecanismes 
+d'espera activa.
+El comportament ha de ser el seguent. La cadira te capacitat per a dues
+persones i nomes es possible la combina un hacker i un empleat. Quan ja hi
+ha un hacker i un empleat a la cadira aquesta ja pot sortir i es por comencar a
+omplir la seguent cadira.*/
+
+class TelecadiraEsperaActiva implements Telecadira {
+	protected boolean hack,empl;
+	protected Mutex mutex;
+	protected int arribats , sortits;
+	TelecadiraEsperaActiva () {mutex = new Mutex ( );}
+
+	public void accedirHacker (){
+	mutex.entrarZC( ) ;
+	while (hack){
+		mutex.sortirZC( ) ;
+		mutex.entrarZC( ) ;
+	}
+	hack = true;
+	arribats ++;
+	while(arribats<2){
+		mutex.sortirZC( ) ;
+		mutex.entrarZC( ) ;
+	}
+	sortits ++;
+	if(sortits == 2) {
+		hack = empl = false;
+		arribats = sortits = 0;
+	}
+	mutex.sortirZC( );
+}
+public void accedirEmpleat(){
+	mutex.entrarZC( );
+	while(empl) {
+		mutex.sortirZC( );
+		mutex.entrarZC( );
+	}
+	empl = true;
+	arribats ++;
+	while(arribats<2){
+		mutex.sortirZC( );
+		mutex.entrarZC( );
+	}
+	sortits ++;
+	if (sortits == 2){
+		hack = empl =false;
+		arribats=sortits=0;
+	}
+	mutex.sortirZC( );
+	}
+}
